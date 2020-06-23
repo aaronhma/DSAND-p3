@@ -1,27 +1,32 @@
-def sort_012(input_list):
+def sort_012(arr: list):
     """
     Given an input array consisting on only 0, 1, and 2, sort the array in a single traversal.
 
     Args:
        input_list(list): List to be sorted
     """
-    def quick_sort(arr: list):
-        if len(arr) < 2:
-            return arr
+    low, high, current = 0, len(arr) - 1, 0
 
-        pivot = arr[0]
-        low = list()
-        high = list()
+    while current <= high:
+        if arr[current] == 0:
+            temp = arr[current]
+            arr[current] = arr[low]
+            arr[low] = temp
 
-        for i in arr:
-            if i <= pivot:
-                low.append(i)
-            elif i > pivot:
-                high.append(i)
+            low += 1
+            current += 1
 
-        return quick_sort(low[1:]) + [pivot] + quick_sort(high)
+        elif arr[current] == 2:
+            temp = arr[current]
+            arr[current] = arr[high]
+            arr[high] = temp
 
-    return quick_sort(input_list)
+            high -= 1
+
+        else:
+            current += 1
+
+    return arr
 
 
 def test_function(test_case):
@@ -37,3 +42,6 @@ test_function([0, 0, 2, 2, 2, 1, 1, 1, 2, 0, 2])
 test_function([2, 1, 2, 0, 0, 2, 1, 0, 1, 0, 0, 2, 2,
                2, 1, 2, 0, 0, 0, 2, 1, 0, 2, 0, 0, 1])
 test_function([0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 2, 2])
+test_function([2, 0, 2, 1, 1, 0])
+test_function([])
+test_function(["temp"])

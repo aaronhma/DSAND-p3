@@ -1,43 +1,71 @@
+class RouteTrieNode:
+    def __init__(self):
+        self.elements = dict()
+        self.root_data = None
+
+    def insert(self, data):
+        if data not in self.elements:
+            self.elements[data] = RouteTrieNode()
+
+
+class RouteTrie:
+    def __init__(self, root_data):
+        self.root = RouteTrieNode()
+        self.root_data = root_data
+
+    def insert(self, path, about):
+        root = self.root
+
+        for i in path:
+            root.insert(i)
+            root = root.elements[i]
+
+        root.root_data = about
+
+    def find(self, path):
+        root = self.root
+
+        for i in path:
+            if i not in root.elements:
+                return -1
+
+            root = root.elements[i]
+
+        return root.root_data
+
+
 class Router:
-    def __init__(self, root, not_found):
-        self.root = root
+    def __init__(self, root_data, not_found):
+        self.router = RouteTrie(root_data)
         self.not_found = not_found
-        self.routes = [["/", root]]
+        self.root_data = root_data
 
-    def add_handler(self, route, content):
-        if "/" != route[-1]:
-            router = route + "/"
-            self.routes.append([router, content])
+    def add_handler(self, path, about):
+        self.router.insert(self.split_path(path), about)
 
-        self.routes.append([route, content])
+    def lookup(self, path):
+        if path == "/":
+            return self.root_data
 
-    def lookup(self, route):
-        # lookup path (by parts) and return the associated handler
-        # you can return None if it's not found or
-        # return the "not found" handler if you added one
-        # bonus points if a path works with and without a trailing slash
-        # e.g. /about and /about/ both return the /about handler
-        for i in self.routes:
-            # for j in i:
-            if i[0] == route:
-                return i[1]
-            # print(j[0])
-            # print(j[1])
-            # if j[0] == route:
-            # return j[1]
+        if len(self.split_path(path)) == 0:
+            return self.router.handler
 
-        return self.not_found
+        web_page = self.router.find(self.split_path(path))
 
-    # def split_path(self):
-    #     # you need to split the path into parts for
-    #     # both the add_handler and loopup functions,
-    #     # so it should be placed in a function here
+        if web_page == -1:
+            return self.not_found
 
-    #     # Here are some test cases and expected outputs you can use to test your implementation
+        else:
+            return web_page
 
-    #     # create the router and add a route
-    #     # remove the 'not found handler' if you did not implement this
-    #     pass
+    def split_path(self, path):
+        split = list()
+
+        for i in path.split(sep='/'):
+            if i != ' ':
+                split.append(i)
+
+        return split
 
 
 router = Router("root handler", "not found handler")
@@ -50,6 +78,5 @@ print(router.lookup("/home"))
 print(router.lookup("/home/about"))  # should print 'about handler'
 # should print 'about handler' or None if you did not handle trailing slashes
 print(router.lookup("/home/about/"))
-# should print 'not found handler' or None if you did not implement one
 # should print 'not found handler' or None if you did not implement one
 print(router.lookup("/home/about/me"))

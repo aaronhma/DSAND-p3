@@ -7,6 +7,9 @@ def rotated_array_search(input_list, number):
     Returns:
        int: Index or -1
     """
+    if len(input_list) <= 1:
+        return -1
+
     def findPivot(arr: list):
         low = 0
         high = len(arr) - 1
@@ -76,3 +79,7 @@ test_function([[6, 7, 8, 9, 10, 1, 2, 3, 4], 1])
 test_function([[6, 7, 8, 1, 2, 3, 4], 8])
 test_function([[6, 7, 8, 1, 2, 3, 4], 1])
 test_function([[6, 7, 8, 1, 2, 3, 4], 10])
+test_function([[], -1])
+test_function([["test", "udacity"], "udacity"])
+test_function([["test", "udacity"], "test"])
+test_function([["test"], "udacity"])

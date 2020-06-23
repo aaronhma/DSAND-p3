@@ -1,30 +1,34 @@
-from itertools import permutations
-
-
-def rearrange_digits(input_list):
+def rearrange_digits(arr):
     """
     Rearrange Array Elements so as to form two number such that their sum is maximum.
-
     Args:
-       input_list(list): Input List
+       arr(list): Input List
     Returns:
        (int),(int): Two maximum sums
     """
-    t = str(input_list)
+    if len(arr) <= 1:
+        return [-1]
 
-    perm = permutations(t)
+    input_freq = [0] * 10
+    for num in arr:
+        input_freq[num] += 1
 
-    perm = list(perm)
+    a1 = []
+    a2 = []
+    first = 1
+    if len(arr) % 2 != 0:
+        first = 2
+    for i in range(9, -1, -1):
+        while input_freq[i]:
+            if first:
+                a1.append(str(i))
+                first -= 1
+            else:
+                first += 1
+                a2.append(str(i))
+            input_freq[i] -= 1
 
-    for i in perm:
-        i = int(i)
-        print("value: ", i)
-
-    max_1 = max(perm)
-    perm.remove(max_1)
-    max_2 = max(perm)
-
-    return [max_1, max_2]
+    return [int(''.join(a1)), int(''.join(a2))]
 
 
 def test_function(test_case):
@@ -37,4 +41,7 @@ def test_function(test_case):
 
 
 test_function([[1, 2, 3, 4, 5], [542, 31]])
-test_case = [[4, 6, 2, 5, 9, 8], [964, 852]]
+test_function([[4, 6, 2, 5, 9, 8], [964, 852]])
+test_function([[], [-1]])
+test_function([[0, 1], [1, 0]])
+test_function([[0, 0], [0, 0]])
